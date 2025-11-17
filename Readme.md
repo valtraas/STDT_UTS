@@ -110,7 +110,7 @@ Perintah tersebut berarti
 Memerintahkan Docker Compose untuk membaca file docker-compose.yml, kemudian menjalankan dan membuat seluruh service (container) yang terdefinisi di dalamnya. Jika image belum tersedia, Docker akan melakukan proses build atau menarik image yang diperlukan.
 
     -d (detach mode)
-Menjalankan seluruh container secara background (detached). Artinya, terminal tidak akan terkunci oleh proses Docker, sehingga Anda bisa tetap mengetik perintah lain sambil container berjalan di belakang.
+Menjalankan seluruh container secara background (detached). 
 
 ![Gambar perintah untuk eksekusi yml](/images/eksekusi_yml.png "Eksekusi yml") 
 
