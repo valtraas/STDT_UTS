@@ -105,6 +105,12 @@ GraphQL adalah lapisan query yang biasanya berjalan sebagai API gateway / orches
     docker-compose up -d
 
 Perintah tersebut berarti 
+    
+     docker-compose up
+Memerintahkan Docker Compose untuk membaca file docker-compose.yml, kemudian menjalankan dan membuat seluruh service (container) yang terdefinisi di dalamnya. Jika image belum tersedia, Docker akan melakukan proses build atau menarik image yang diperlukan.
+
+    -d (detach mode)
+Menjalankan seluruh container secara background (detached). Artinya, terminal tidak akan terkunci oleh proses Docker, sehingga Anda bisa tetap mengetik perintah lain sambil container berjalan di belakang.
 
 ![Gambar perintah untuk eksekusi yml](/images/eksekusi_yml.png "Eksekusi yml") 
 
@@ -114,11 +120,15 @@ Gambar tersebut merupakan perintah untuk mengeksekusi kontainer primary dengan p
 
  ###  Membuat, mengisi, dan menampilkan tabel message
 ![Gambar tabel message.](/images/buat_tampil_table.png "Tabel message")
-
+Gambar tersebut merupakan tampilan proses pembuatan tabel message pada database di dalam kontainer primary. Pada tahap ini dilakukan eksekusi perintah SQL untuk membuat tabel dengan kolom id sebagai primary key dan content sebagai kolom berisi teks pesan. Setelah tabel berhasil dibuat, dilakukan proses insert dua data contoh, yaitu “Pesan pertama” dan “Pesan kedua”. Selanjutnya, perintah SELECT digunakan untuk menampilkan isi tabel dan membuktikan bahwa data berhasil tersimpan di dalam primary database.
 
 ### C. Menjalankan di kontainer replica 
 ![Gambar eksekusi replica.](/images/eksekusi_replica.png "Eksekusi primary")
+Gambar tersebut menunjukkan proses masuk ke dalam kontainer replica menggunakan perintah docker exec. Setelah masuk, dilakukan koneksi ke database menggunakan akun admin. Tahap ini bertujuan untuk mengamati apakah tabel dan data yang dibuat pada primary telah direplikasi dengan benar ke dalam kontainer replica
 
  ### Menampilkan dan mencoba mengisi tabel message
 ![Gambar tabel message.](/images/tampil_buat_replica.png "Tabel message")
+Gambar tersebut menampilkan hasil query SELECT pada kontainer replica. Terlihat bahwa data yang sebelumnya dibuat di primary berhasil muncul juga di replica, menandakan bahwa proses replikasi berjalan dengan baik. Namun, ketika dilakukan perintah INSERT untuk menambah data baru pada replica, muncul pesan error “cannot execute INSERT in a read-only transaction”.
+
+Hal ini menunjukkan bahwa kontainer replica bersifat read-only, sesuai dengan konsep replikasi database PostgreSQL, di mana primary bertugas melakukan operasi tulis (write) dan replica hanya digunakan untuk operasi baca (read). Dengan demikian, replica tidak mengizinkan operasi insert, update, atau delete.
 
