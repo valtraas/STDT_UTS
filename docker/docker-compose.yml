@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  primary:
+    image: bitnami/postgresql:latest
+    container_name: pg-primary
+    ports:
+      - '5432:5432'
+    volumes:
+      - primary_data:/bitnami/postgresql
+    environment:
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=adminpass
+      - POSTGRESQL_DATABASE=app_db
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=replicator
+      - POSTGRESQL_REPLICATION_PASSWORD=reppass
+
+  replica:
+    image: bitnami/postgresql:latest
+    container_name: pg-replica
+    ports:
+      - '5433:5432'
+    depends_on:
+      - primary
+    volumes:
+      - replica_data:/bitnami/postgresql
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_MASTER_HOST=primary   
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+     
+      - POSTGRESQL_REPLICATION_USER=replicator
+      - POSTGRESQL_REPLICATION_PASSWORD=reppass
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=adminpass
+      - POSTGRESQL_DATABASE=app_db
+
+volumes:
+  primary_data:
+  replica_data:
+  
